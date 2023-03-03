@@ -1,8 +1,14 @@
+import { RmqService } from '@app/common';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const rmqService = app.get<RmqService>(RmqService);  
+  app.connectMicroservice(rmqService.getOptions('USER'));
+  const configService = app.get(ConfigService);
+  await app.startAllMicroservices();  
+  await app.listen(configService.get('PORT'));  
 }
 bootstrap();

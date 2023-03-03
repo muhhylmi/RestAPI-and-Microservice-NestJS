@@ -13,24 +13,27 @@ const users_controller_1 = require("./users.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const user_schema_1 = require("./schema/user.schema");
 const microservices_1 = require("@nestjs/microservices");
+const config_1 = require("@nestjs/config");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
-    (0, common_1.Global)(),
     (0, common_1.Module)({
         imports: [
+            config_1.ConfigModule,
             mongoose_1.MongooseModule.forFeature([{ name: user_schema_1.User.name, schema: user_schema_1.UserSchema }]),
-            microservices_1.ClientsModule.register([
+            microservices_1.ClientsModule.registerAsync([
                 {
                     name: 'USERS_SERVICE',
-                    transport: microservices_1.Transport.RMQ,
-                    options: {
-                        urls: ['amqp://guest:guest@localhost:5672'],
-                        queue: 'main_queue',
-                        queueOptions: {
-                            durable: false
-                        },
-                    },
+                    useFactory: async (configService) => ({
+                        transport: microservices_1.Transport.RMQ,
+                        options: {
+                            urls: ['amqp://guest:guest@localhost:5672'],
+                            queue: 'main_queue',
+                            queueOptions: {
+                                durable: false
+                            }
+                        }
+                    })
                 },
             ]),
         ],

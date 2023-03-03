@@ -14,25 +14,24 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const microservices_1 = require("@nestjs/microservices");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const user_schema_1 = require("./schema/user.schema");
 let UsersService = class UsersService {
-    constructor(userModel) {
+    constructor(userModel, client) {
         this.userModel = userModel;
+        this.client = client;
     }
     create(createUserDto) {
         const createCat = new this.userModel(createUserDto);
+        this.client.emit('user-created', createUserDto);
         return createCat.save();
     }
-    findAll() {
-        return this.userModel.aggregate([{
-                '$match': {
-                    "_id": new mongoose_2.Types.ObjectId("617bf1a8969aa244bd122377")
-                }
-            }]);
+    async findAll() {
+        return await this.userModel.find();
     }
-    findOne(data) {
+    async findOne(data) {
         const result = this.userModel.find({ 'name': data.name }).exec().then(res => {
             console.log(res);
         });
@@ -44,11 +43,20 @@ let UsersService = class UsersService {
     remove(id) {
         return `This action removes a #${id} user`;
     }
+    async receiveUserData(data, context) {
+        const channel = context.getChannelRef();
+        const originalMsg = context.getMessage();
+        const msgJson = JSON.parse(originalMsg.content);
+        channel.ack(originalMsg);
+        return msgJson;
+    }
 };
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __param(1, (0, common_1.Inject)('USERS_SERVICE')),
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        microservices_1.ClientProxy])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map

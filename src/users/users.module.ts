@@ -1,27 +1,25 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ConfigModule } from '@nestjs/config';
+import { RmqModule } from '@app/common';
+import * as Joi from 'joi';
 
-@Global()
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        RMQ_URI: Joi.string().required(),
+        MONGODB_URI: Joi.string().required(),
+        PORT: Joi.number().required(),
+        USER_QUEUE: Joi.string().required()
+      }),
+    }),
     MongooseModule.forFeature([{name: User.name, schema: UserSchema}]),
-    ClientsModule.register([
-      {
-        name: 'USERS_SERVICE',
-        transport: Transport.RMQ,
-        options: {
-          urls: ['amqp://guest:guest@localhost:5672'],
-          queue: 'main_queue',
-          queueOptions: {
-            durable: false
-          },
-        },
-      },
-    ]),
+    RmqModule.register({ name: 'USER' })
   ],
   controllers: [UsersController],
   providers: [UsersService]

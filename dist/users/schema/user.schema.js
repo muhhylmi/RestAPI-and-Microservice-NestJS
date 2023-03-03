@@ -47,6 +47,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: exports.AddressSchema }),
     __metadata("design:type", Object)
 ], User.prototype, "custom", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: new Date().toISOString() }),
+    __metadata("design:type", String)
+], User.prototype, "createdAt", void 0);
 User = __decorate([
     (0, mongoose_1.Schema)()
 ], User);

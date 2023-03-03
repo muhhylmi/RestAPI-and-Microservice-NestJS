@@ -24,11 +24,10 @@ let UsersController = class UsersController {
         this.client = client;
     }
     create(createUserDto) {
-        this.client.emit('test1', createUserDto);
         return this.usersService.create(createUserDto);
     }
-    findAll() {
-        return this.usersService.findAll();
+    async findAll() {
+        return await this.usersService.findAll();
     }
     findOne(id, test) {
         let result = this.usersService.findOne(+id);
@@ -46,13 +45,6 @@ let UsersController = class UsersController {
     remove(id) {
         return this.usersService.remove(+id);
     }
-    getNotifications(data, context) {
-        const channel = context.getChannelRef();
-        const originalMsg = context.getMessage();
-        const msgJson = JSON.parse(originalMsg.content);
-        return this.usersService.findOne(msgJson.data);
-        ;
-    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -65,7 +57,7 @@ __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
@@ -90,14 +82,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "remove", null);
-__decorate([
-    (0, microservices_1.MessagePattern)('test1'),
-    __param(0, (0, microservices_1.Payload)()),
-    __param(1, (0, microservices_1.Ctx)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, microservices_1.RmqContext]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "getNotifications", null);
 UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __param(1, (0, common_1.Inject)('USERS_SERVICE')),

@@ -11,6 +11,7 @@ export declare class User {
     age: number;
     gender: string;
     custom: Body;
+    createdAt: string;
 }
 export declare const UserSchema: import("mongoose").Schema<Document<User, any, any>, import("mongoose").Model<Document<User, any, any>, any, any, any>, {}>;
 export {};

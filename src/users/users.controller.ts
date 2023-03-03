@@ -2,24 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpS
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ClientProxy, Ctx, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    @Inject('USERS_SERVICE') private readonly client: ClientProxy
     ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
-    this.client.emit('test1', createUserDto);
+    console.log(createUserDto);
     return this.usersService.create(createUserDto);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(): Promise<object> {
+    return await this.usersService.findAll();
   }
 
   @Get(':id')
@@ -44,14 +42,4 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 
-  @MessagePattern('test1')
-  getNotifications(@Payload() data: number[], @Ctx() context: RmqContext) {
-    const channel = context.getChannelRef();
-    const originalMsg = context.getMessage();
-    const msgJson = JSON.parse(originalMsg.content)
-    return this.usersService.findOne(msgJson.data);
-    ;
-    
-    // channel.ack(originalMsg);
-  }
 }
