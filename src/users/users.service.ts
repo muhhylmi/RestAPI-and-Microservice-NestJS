@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, RmqContext } from '@nestjs/microservices';
+import { Inject, Injectable, BadRequestException } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User, UserDocument } from './schema/user.schema';
 
 @Injectable()
@@ -14,10 +13,14 @@ export class UsersService {
     @Inject('USER') private readonly client: ClientProxy
   ){}
   
-  create(createUserDto: CreateUserDto) {
-    const createCat = new this.userModel(createUserDto);
-    this.client.emit('user-created', createUserDto);
-    return createCat.save();
+  async create(createUserDto: CreateUserDto) {
+    const createUser = new this.userModel(createUserDto);
+    const result = await createUser.save();
+    if(!result){
+      throw new BadRequestException('Failed to Insert User');
+    }
+    this.client.emit('user-created', result);
+    return result;
   }
 
   async findAll(): Promise<object> {

@@ -1,14 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { UsersV2Service } from './users-v2.service';
-import { CreateUserV2Dto } from './dto/create-user-v2.dto';
-import { UpdateUserV2Dto } from './dto/update-user-v2.dto';
-import { ClientProxy, Ctx, EventPattern, MessagePattern, Payload, RmqContext } from '@nestjs/microservices';
+import { CreateUserV2Dto, UpdateUserV2Dto } from './user-v2.dto';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 
 @Controller('usersV2')
 export class UsersV2Controller {
   constructor(
-    private readonly usersService: UsersV2Service,
-    @Inject('USER') private readonly client: ClientProxy
+    private readonly usersService: UsersV2Service
     ) {}
 
   @Post()
@@ -44,7 +42,7 @@ export class UsersV2Controller {
   }
 
   @EventPattern('user-created')
-  getNotifications(@Payload() data: number[], @Ctx() context: RmqContext) {
-    return this.usersService.receiveUserData(data, context);    
+  async getNotifications(@Payload() data: number[], @Ctx() context: RmqContext) {    
+    return await this.usersService.receiveUserData(data, context);    
   }
 }

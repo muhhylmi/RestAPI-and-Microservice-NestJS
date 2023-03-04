@@ -5,7 +5,9 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { UsersV2Module } from './users-v2/users-v2.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ItemModule } from './item/item.module';
 import * as Joi from 'joi';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import * as Joi from 'joi';
       }),
       inject: [ConfigService],
     }),
+    ItemModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService]

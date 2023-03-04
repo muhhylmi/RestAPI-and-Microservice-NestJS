@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, RmqContext } from '@nestjs/microservices';
+import { Injectable } from '@nestjs/common';
+import { RmqContext } from '@nestjs/microservices';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { CreateUserV2Dto } from './dto/create-user-v2.dto';
-import { UpdateUserV2Dto } from './dto/update-user-v2.dto';
+import { CreateUserV2Dto, UpdateUserV2Dto } from './user-v2.dto';
 import { UserV2, UserDocument } from './schema/user-v2.schema';
 
 @Injectable()
@@ -11,12 +10,10 @@ export class UsersV2Service {
 
   constructor(
     @InjectModel(UserV2.name) private userModel: Model<UserDocument>,
-    @Inject('USER') private readonly client: ClientProxy
   ){}
   
   create(createUserDto: CreateUserV2Dto) {
     const createUser = new this.userModel(createUserDto);
-    this.client.emit('test1', createUserDto);
     return createUser.save();
   }
 
@@ -42,7 +39,7 @@ export class UsersV2Service {
   async receiveUserData(data: any, context: RmqContext): Promise<object> {
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
-    const msgJson = JSON.parse(originalMsg.content);
+    const msgJson = JSON.parse(originalMsg.content);    
 
     const createUser = new this.userModel(data).save();
     if(createUser){

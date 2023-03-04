@@ -4,31 +4,18 @@ import { Document } from 'mongoose';
 export type UserDocument = UserV2 & Document;
 
 @Schema()
-class Address {
-  @Prop()
-  address: string;
-
-  @Prop()
-  hobbies: [string];
-
-  @Prop()
-  _id : false
-}
-export const AddressSchema = SchemaFactory.createForClass(Address);
-
-@Schema()
 export class UserV2 {
   @Prop()
-  name: string;
+  username: string;
 
   @Prop()
-  age: number;
+  password: string;
 
   @Prop()
-  gender: string;
+  userID: string;
 
-  @Prop({type : AddressSchema})
-  custom: Body;
+  @Prop()
+  createdAt: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserV2);

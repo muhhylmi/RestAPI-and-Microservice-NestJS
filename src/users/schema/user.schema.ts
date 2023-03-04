@@ -1,36 +1,21 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, Document } from 'mongoose';
+import { Document } from 'mongoose';
+import { v4 as uuid } from 'uuid';
 
 export type UserDocument = User & Document;
 
 @Schema()
-class Address{
-  @Prop()
-  address: string;
-
-  @Prop()
-  hobbies: [string];
-
-  @Prop()
-  _id : false
-}
-export const AddressSchema = SchemaFactory.createForClass(Address);
-
-@Schema()
 export class User {
-  @Prop()
-  name: string;
+  @Prop({ require: true })
+  username: string;
 
-  @Prop()
-  age: number;
+  @Prop({ required: true })
+  password: string;
 
-  @Prop()
-  gender: string;
+  @Prop({ default: uuid()})
+  userID: string;
 
-  @Prop({type : AddressSchema })
-  custom: Body;
-
-  @Prop()
+  @Prop({ default: new Date().toISOString() })
   createdAt: string;
 }
 
