@@ -13,6 +13,7 @@ import { Item, itemSchema } from './schema/item.schema';
         RmqModule
     ],
     controllers: [ItemController],
-    providers: [ItemService]
+    providers: [ItemService],
+    exports: [ItemService]
 })
 export class ItemModule {}

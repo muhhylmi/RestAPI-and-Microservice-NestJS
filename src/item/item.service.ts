@@ -25,9 +25,9 @@ export class ItemService{
         return result;
     }
 
-    async findOne(payload: string){
-        const item = await this.itemModel.findOne({ itemID: payload });
-        if(item.errors){
+    async findOne(payload: any){
+        const item = await this.itemModel.findOne(payload);
+        if(!item){
             throw new BadRequestException('item not found');
         }
         const result: response = { data: item, message: 'Item Provided' };
