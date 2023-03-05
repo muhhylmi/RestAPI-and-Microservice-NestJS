@@ -9,18 +9,18 @@ export class UsersController {
     ) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return await this.usersService.create(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return await this.usersService.createUser(createUserDto);
   }
 
   @Get()
-  async findAll(): Promise<object> {
-    return await this.usersService.findAll();
+  async findAllUser(): Promise<object> {
+    return await this.usersService.findAllUser();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Body('test') test: object) {
-    let result = this.usersService.findOne(+id);
+  findOneUser(@Param('id') id: string, @Body('test') test: object) {
+    let result = this.usersService.findOneUser(+id);
     if (id == "1") {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
@@ -31,13 +31,13 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  removeUser(@Param('id') id: string) {
+    return this.usersService.removeUser(id);
   }
 
 }

@@ -9,6 +9,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
     password: string;
+
+    userID: string;
+    createdAt: string;
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {}

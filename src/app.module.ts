@@ -9,9 +9,11 @@ import { ItemModule } from './item/item.module';
 import * as Joi from 'joi';
 import { OrderModule } from './order/order.module';
 import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from '@app/common/database/database.module';
 
 @Module({
   imports: [
+    DatabaseModule,
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
@@ -23,13 +25,6 @@ import { AuthModule } from './auth/auth.module';
     }),
     UsersModule,
     UsersV2Module,
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
-      inject: [ConfigService],
-    }),
     ItemModule,
     OrderModule,
     AuthModule

@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schema/user.schema';
 import { ConfigModule } from '@nestjs/config';
 import { RmqModule } from '@app/common';
+import { UserRepository } from './user.repository';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { RmqModule } from '@app/common';
     RmqModule.register({ name: 'USER' })
   ],
   controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService]
+  providers: [UsersService, UserRepository],
+  exports: [UsersService, UserRepository]
 })
 export class UsersModule {}
