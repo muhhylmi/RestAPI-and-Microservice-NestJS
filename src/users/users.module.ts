@@ -13,6 +13,7 @@ import { RmqModule } from '@app/common';
     RmqModule.register({ name: 'USER' })
   ],
   controllers: [UsersController],
-  providers: [UsersService]
+  providers: [UsersService],
+  exports: [UsersService]
 })
 export class UsersModule {}

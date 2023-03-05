@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { v4 as uuid } from 'uuid';
 
 export type OrderDocument = Order & Document;
 @Schema()
@@ -18,7 +17,7 @@ export const OrderItemsSchema = SchemaFactory.createForClass(OrderItems);
 
 @Schema()
 export class Order {
-  @Prop({ default: uuid() })
+  @Prop({ required: true })
   orderID: string;
 
   @Prop({ required: true })

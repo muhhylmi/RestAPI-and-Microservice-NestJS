@@ -7,6 +7,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Inject } from '@nestjs/common/decorators';
 import { CreateOrderDto } from './order.dto';
 import { Item } from 'src/item/schema/item.schema';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class OrderService{
@@ -27,6 +28,7 @@ export class OrderService{
             totalPrice += orderItem.qty * item.price;
         }
         payload.totalPrice = totalPrice;
+        payload.orderID = uuid();
         const createOrder = new this.orderModel(payload);
         const result = await createOrder.save();
         if(!result){

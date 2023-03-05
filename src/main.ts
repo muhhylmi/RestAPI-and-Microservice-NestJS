@@ -8,6 +8,8 @@ async function bootstrap() {
   const rmqService = app.get<RmqService>(RmqService);  
   app.connectMicroservice(rmqService.getOptions('USER'));
   app.connectMicroservice(rmqService.getOptions('ORDER'));
+
+  app.enableCors();
   const configService = app.get(ConfigService);
   await app.startAllMicroservices();  
   await app.listen(configService.get('PORT'));  

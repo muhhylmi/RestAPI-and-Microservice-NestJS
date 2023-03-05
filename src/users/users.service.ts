@@ -4,6 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { User, UserDocument } from './schema/user.schema';
+import * as bcrypt from 'bcrypt';
+
 
 @Injectable()
 export class UsersService {
@@ -14,6 +16,8 @@ export class UsersService {
   ){}
   
   async create(createUserDto: CreateUserDto) {
+    const hash = await bcrypt.hash(createUserDto.password, 10);
+    createUserDto.password = hash;
     const createUser = new this.userModel(createUserDto);
     const result = await createUser.save();
     if(!result){
@@ -27,11 +31,19 @@ export class UsersService {
     return await this.userModel.find();
   }
 
-  async findOne(data: any) {
-    const result = this.userModel.find({'name': data.name}).exec().then(res=>{
-      console.log(res);
-    });    
-    return this.userModel.find({_id: new Types.ObjectId()}).exec();
+  async findOne(query: any) {
+    const result = await this.userModel.findOne(query)
+    if(!result){
+      throw new BadRequestException('failed to get user');
+    }
+    return result;  }
+
+  async findByUsername(username: string){
+    const result = await this.userModel.findOne({ username });
+    if(!result){
+      throw new BadRequestException('failed to get user');
+    }
+    return result;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -21,7 +21,7 @@ export class Item {
   @Prop({ required: true })
   itemName: string;
 
-  @Prop({ default: uuid() })
+  @Prop({ required: true })
   itemID: string;
 
   @Prop({ required: true })

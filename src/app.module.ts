@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ItemModule } from './item/item.module';
 import * as Joi from 'joi';
 import { OrderModule } from './order/order.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { OrderModule } from './order/order.module';
       inject: [ConfigService],
     }),
     ItemModule,
-    OrderModule
+    OrderModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]
